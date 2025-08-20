@@ -1,8 +1,20 @@
 import { User } from '../types/user';
 import { userCollection } from '../../db/mongo.db';
-import { ObjectId } from 'mongodb';
+import { ObjectId, WithId } from 'mongodb';
 
 export const usersRepository = {
+  async findByEmailOrLogin(loginOrEmail: string): Promise<WithId<User> | null> {
+    const user = await userCollection.findOne({
+      $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
+    });
+
+    if (user) {
+      return user;
+    }
+
+    return null;
+  },
+
   async create(user: User): Promise<string> {
     const insertedResult = await userCollection.insertOne(user);
 

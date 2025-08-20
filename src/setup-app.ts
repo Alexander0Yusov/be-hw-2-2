@@ -12,7 +12,7 @@ import { postsRouter } from './2-posts/router/posts.router';
 import { testRouter } from './3-testing/router/tests.router';
 import { usersRouter } from './4-users/router/users.router';
 import { setupSwagger } from './core/swagger/setup-swagger';
-import { authRouter } from './5-auth/router/users.router';
+import { authRouter } from './5-auth/router/auth.router';
 
 export const setupApp = (app: Express) => {
   app.use(express.json());

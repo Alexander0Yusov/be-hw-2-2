@@ -1,34 +1,50 @@
 import { Request, Response } from 'express';
 import { HttpStatus } from '../../../core/types/HttpStatus';
-import { usersQwRepository } from '../../../4-users/qw-repository/users-qw-repository';
 import { AuthInputModel } from '../../types/auth-iput-model';
-import bcrypt from 'bcrypt';
+import { authService } from '../../domain/auth.service';
+import { ResultStatus } from '../../../core/result/resultCode';
+import { resultCodeToHttpException } from '../../../core/result/resultCodeToHttpException';
 
 export async function postAuthHandler(
   req: Request<{}, {}, AuthInputModel>,
   res: Response,
 ) {
-  try {
-    const existsUserId = await usersQwRepository.findByEmailOrLogin(
-      req.body.loginOrEmail,
-    );
+  const { loginOrEmail, password } = req.body;
 
-    if (!existsUserId) {
-      res.sendStatus(HttpStatus.Unauthorized);
-    }
+  const result = await authService.loginUser(loginOrEmail, password);
 
-    const existsHash = await usersQwRepository.findHashById(
-      existsUserId as string,
-    );
-
-    const match = await bcrypt.compare(req.body.password, existsHash);
-
-    if (match) {
-      res.sendStatus(HttpStatus.NoContent);
-    } else {
-      res.sendStatus(HttpStatus.Unauthorized);
-    }
-  } catch (error: unknown) {
-    res.sendStatus(HttpStatus.InternalServerError);
+  if (result.status !== ResultStatus.Success) {
+    return res
+      .status(resultCodeToHttpException(result.status))
+      .send(result.extensions);
   }
+
+  return res
+    .status(HttpStatus.Ok)
+    .send({ accessToken: result.data!.accessToken });
+
+  // --------------------------------------------------------
+  //   try {
+  //   const existsUserId = await usersQwRepository.findByEmailOrLogin(
+  //     req.body.loginOrEmail,
+  //   );
+
+  //   if (!existsUserId) {
+  //     res.sendStatus(HttpStatus.Unauthorized);
+  //   }
+
+  //   const existsHash = await usersQwRepository.findHashById(
+  //     existsUserId as string,
+  //   );
+
+  //   const match = await bcrypt.compare(req.body.password, existsHash);
+
+  //   if (match) {
+  //     res.sendStatus(HttpStatus.NoContent);
+  //   } else {
+  //     res.sendStatus(HttpStatus.Unauthorized);
+  //   }
+  // } catch (error: unknown) {
+  //   res.sendStatus(HttpStatus.InternalServerError);
+  // }
 }
