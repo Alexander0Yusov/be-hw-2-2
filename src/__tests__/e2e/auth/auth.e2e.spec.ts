@@ -36,6 +36,6 @@ describe('Auth API', () => {
     await request(app)
       .post(AUTH_PATH + '/login')
       .send({ loginOrEmail: newUser.email, password: newUser.password })
-      .expect(HttpStatus.NoContent);
+      .expect(HttpStatus.Ok);
   });
 });

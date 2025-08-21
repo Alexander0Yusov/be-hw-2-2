@@ -3,32 +3,29 @@ import { idValidationMiddleware } from '../../core/middlewares/validation/id-val
 import { errorsCatchMiddleware } from '../../core/middlewares/validation/errors-catch.middleware';
 import { superAdminGuardMiddleware } from '../../core/middlewares/validation/super-admin-guard.middleware';
 import { postDtoValidationMiddleware } from '../validation/post-dto-validation.middleware';
-import {
-  deletePostHandler,
-  getPostHandler,
-  getPostListHandler,
-  postPostHandler,
-  putPostHandler,
-} from './handlers';
+import { deletePostHandler, getPostHandler, getPostListHandler, postPostHandler, putPostHandler } from './handlers';
 import { paginationAndSortingValidation } from '../../core/middlewares/validation/query-pagination-sorting.validation-middleware';
 import { PostSortField } from './input/post-sort-field';
+import { commentDtoValidationMiddleware } from '../../6-comments/validation/comment-dto-validation.middleware';
+import { postCommentHandler } from './handlers/post-comment.handler';
+import { accessTokenGuard } from '../../5-auth/router/guards/access.token.guard';
 
 export const postsRouter = Router({});
 
 postsRouter
-  .get(
-    '',
-    paginationAndSortingValidation(PostSortField),
-    // errorsCatchMiddleware,
-    getPostListHandler,
-  )
+  .get('', paginationAndSortingValidation(PostSortField), getPostListHandler)
+
+  // .get('/:id/comments', paginationAndSortingValidation(PostSortField), getPostListHandler)
+
+  .post('', superAdminGuardMiddleware, postDtoValidationMiddleware, errorsCatchMiddleware, postPostHandler)
 
   .post(
-    '',
-    superAdminGuardMiddleware,
-    postDtoValidationMiddleware,
+    '/:id/comments',
+    accessTokenGuard,
+    idValidationMiddleware,
+    commentDtoValidationMiddleware,
     errorsCatchMiddleware,
-    postPostHandler,
+    postCommentHandler,
   )
 
   .get('/:id', idValidationMiddleware, errorsCatchMiddleware, getPostHandler)
@@ -42,10 +39,4 @@ postsRouter
     putPostHandler,
   )
 
-  .delete(
-    '/:id',
-    superAdminGuardMiddleware,
-    idValidationMiddleware,
-    errorsCatchMiddleware,
-    deletePostHandler,
-  );
+  .delete('/:id', superAdminGuardMiddleware, idValidationMiddleware, errorsCatchMiddleware, deletePostHandler);
