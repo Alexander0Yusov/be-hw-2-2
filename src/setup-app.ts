@@ -1,6 +1,6 @@
 import express, { Express } from 'express';
 import cors from 'cors';
-import { AUTH_PATH, BLOGS_PATH, COMMENTS_PATH, POSTS_PATH, TESTING_PATH, USERS_PATH } from './core/paths/paths';
+import { AUTH_PATH, BLOGS_PATH, paths, POSTS_PATH, TESTING_PATH, USERS_PATH } from './core/paths/paths';
 import { blogsRouter } from './1-blogs/router/blogs.router';
 import { postsRouter } from './2-posts/router/posts.router';
 import { testRouter } from './3-testing/router/tests.router';
@@ -21,7 +21,7 @@ export const setupApp = (app: Express) => {
   app.use(POSTS_PATH, postsRouter);
   app.use(USERS_PATH, usersRouter);
   app.use(AUTH_PATH, authRouter);
-  app.use(COMMENTS_PATH, commentsRouter);
+  app.use(paths.comments, commentsRouter);
   app.use(TESTING_PATH, testRouter);
 
   setupSwagger(app);

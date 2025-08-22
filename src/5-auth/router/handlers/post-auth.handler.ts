@@ -11,33 +11,10 @@ export async function postAuthHandler(req: Request<{}, {}, AuthInputModel>, res:
   const result = await authService.loginUser(loginOrEmail, password);
 
   if (result.status !== ResultStatus.Success) {
+    console.log(44, resultCodeToHttpException(result.status));
+
     return res.status(resultCodeToHttpException(result.status)).send(result.extensions);
   }
 
   return res.status(HttpStatus.Ok).send({ accessToken: result.data!.accessToken });
-
-  // --------------------------------------------------------
-  //   try {
-  //   const existsUserId = await usersQwRepository.findByEmailOrLogin(
-  //     req.body.loginOrEmail,
-  //   );
-
-  //   if (!existsUserId) {
-  //     res.sendStatus(HttpStatus.Unauthorized);
-  //   }
-
-  //   const existsHash = await usersQwRepository.findHashById(
-  //     existsUserId as string,
-  //   );
-
-  //   const match = await bcrypt.compare(req.body.password, existsHash);
-
-  //   if (match) {
-  //     res.sendStatus(HttpStatus.NoContent);
-  //   } else {
-  //     res.sendStatus(HttpStatus.Unauthorized);
-  //   }
-  // } catch (error: unknown) {
-  //   res.sendStatus(HttpStatus.InternalServerError);
-  // }
 }

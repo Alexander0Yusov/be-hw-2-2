@@ -4,9 +4,10 @@ import { Comment } from '../types/comment';
 import { CommentInputDto } from '../dto/comment-input.dto';
 import { CommentViewModel } from '../types/comment-view-model';
 import { CommentQueryInput } from '../router/input/blog-query.input';
+import { CommentListPaginatedOutput } from '../router/output/comment-list-paginated.output';
 
 export const commentsService = {
-  async findManyByPostId(id: string, queryDto: CommentQueryInput): Promise<any> {
+  async findManyByPostId(id: string, queryDto: CommentQueryInput): Promise<CommentListPaginatedOutput> {
     return commentsRepository.findManyByPostId(id, queryDto);
   },
 

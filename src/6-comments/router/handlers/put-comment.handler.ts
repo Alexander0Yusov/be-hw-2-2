@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { HttpStatus } from '../../../core/types/HttpStatus';
-import { createErrorMessages } from '../../../core/utils/error.utils';
 import { commentsService } from '../../application/comments.service';
 
 export async function putCommentHandler(req: Request, res: Response) {
@@ -8,7 +7,12 @@ export async function putCommentHandler(req: Request, res: Response) {
     const comment = await commentsService.findById(req.params.id);
 
     if (!comment) {
-      res.status(HttpStatus.NotFound).send(createErrorMessages([{ field: 'id', message: 'Comment not found' }]));
+      res.sendStatus(HttpStatus.NotFound);
+      return;
+    }
+
+    if (req.user!.id !== comment.commentatorInfo.userId) {
+      res.sendStatus(HttpStatus.Forbidden);
       return;
     }
 

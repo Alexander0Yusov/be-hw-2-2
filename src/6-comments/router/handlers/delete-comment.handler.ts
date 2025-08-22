@@ -12,6 +12,11 @@ export async function deleteCommentHandler(req: Request, res: Response) {
       return;
     }
 
+    if (req.user!.id !== comment.commentatorInfo.userId) {
+      res.sendStatus(HttpStatus.Forbidden);
+      return;
+    }
+
     await commentsService.delete(req.params.id);
 
     res.sendStatus(HttpStatus.NoContent);
