@@ -3,23 +3,21 @@ import { commentsRepository } from '../repository/comments.repository';
 import { Comment } from '../types/comment';
 import { CommentInputDto } from '../dto/comment-input.dto';
 import { CommentViewModel } from '../types/comment-view-model';
+import { CommentQueryInput } from '../router/input/blog-query.input';
 
 export const commentsService = {
-  // async findMany(queryDto: PostQueryInput): Promise<{ items: WithId<Post>[]; totalCount: number }> {
-  //   return postsRepository.findMany(queryDto);
-  // },
+  async findManyByPostId(id: string, queryDto: CommentQueryInput): Promise<any> {
+    return commentsRepository.findManyByPostId(id, queryDto);
+  },
 
-  // async findManyById(id: string, queryDto: PostQueryInput): Promise<{ items: WithId<Post>[]; totalCount: number }> {
-  //   return postsRepository.findManyById(id, queryDto);
-  // },
-
-  async create(dto: CommentInputDto, userId: string, userLogin: string): Promise<CommentViewModel> {
+  async create(dto: CommentInputDto, userId: string, userLogin: string, postId: ObjectId): Promise<CommentViewModel> {
     const newComment: Comment = {
       content: dto.content,
       commentatorInfo: {
         userId: new ObjectId(userId),
         userLogin,
       },
+      postId: postId,
       createdAt: new Date(),
     };
 
@@ -30,13 +28,13 @@ export const commentsService = {
     return commentsRepository.findById(id);
   },
 
-  // async update(id: string, dto: PostInputDto, blogName: string): Promise<void> {
-  //   await postsRepository.update(id, dto, blogName);
-  //   return;
-  // },
+  async update(id: string, dto: CommentInputDto): Promise<void> {
+    await commentsRepository.update(id, dto);
+    return;
+  },
 
-  // async delete(id: string): Promise<void> {
-  //   await postsRepository.delete(id);
-  //   return;
-  // },
+  async delete(id: string): Promise<void> {
+    await commentsRepository.delete(id);
+    return;
+  },
 };

@@ -1,7 +1,4 @@
-// import { PaginationAndSorting } from '../../../core/types/pagination-and-sorting';
-// import { PostSortField } from './post-sort-field';
+import { PaginationAndSorting } from '../../../core/types/pagination-and-sorting';
+import { CommentSortField } from './comment-sort-field';
 
-// export type PostQueryInput = PaginationAndSorting<PostSortField> &
-//   Partial<{
-//     searchNameTerm: string;
-//   }>;
+export type CommentQueryInput = PaginationAndSorting<CommentSortField>;

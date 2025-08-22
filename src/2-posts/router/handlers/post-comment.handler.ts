@@ -27,7 +27,7 @@ export async function postCommentHandler(
       return;
     }
 
-    const createdComment = await commentsService.create(req.body, user.id, user.login);
+    const createdComment = await commentsService.create(req.body, user.id, user.login, post._id);
 
     res.status(HttpStatus.Created).send(createdComment);
   } catch (error: unknown) {

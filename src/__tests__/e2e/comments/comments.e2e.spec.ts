@@ -66,6 +66,38 @@ describe('Comment API', () => {
       .expect(HttpStatus.Ok);
 
     console.log(55, res.body);
+
+    // получение всех комментариев к посту
+    const comments = await request(app)
+      .get(POSTS_PATH + `/${createdPost.body.id}` + '/comments')
+      .expect(HttpStatus.Ok);
+
+    console.log(66, comments.body);
+
+    // редактирование комментария
+    await request(app)
+      .put(COMMENTS_PATH + `/${createdComment.body.id}`)
+      .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+      .send({ content: 'b'.repeat(25) })
+      .expect(HttpStatus.NoContent);
+
+    const res2 = await request(app)
+      .get(COMMENTS_PATH + `/${createdComment.body.id}`)
+      .expect(HttpStatus.Ok);
+
+    console.log(77, res2.body);
+
+    // удаление комментария
+    await request(app)
+      .del(COMMENTS_PATH + `/${createdComment.body.id}`)
+      .set('Authorization', `Bearer ${loginResponse.body.accessToken}`)
+      .expect(HttpStatus.NoContent);
+
+    const res3 = await request(app)
+      .get(COMMENTS_PATH + `/${createdComment.body.id}`)
+      .expect(HttpStatus.NotFound);
+
+    console.log(88, res3.body);
   });
 
   // it('should return posts list; GET /posts', async () => {

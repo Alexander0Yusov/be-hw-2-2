@@ -6,5 +6,6 @@ export type Comment = {
     userId: ObjectId;
     userLogin: string;
   };
+  postId: ObjectId;
   createdAt: Date;
 };
