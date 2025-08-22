@@ -11,8 +11,6 @@ export async function postAuthHandler(req: Request<{}, {}, AuthInputModel>, res:
   const result = await authService.loginUser(loginOrEmail, password);
 
   if (result.status !== ResultStatus.Success) {
-    console.log(44, resultCodeToHttpException(result.status));
-
     return res.status(resultCodeToHttpException(result.status)).send(result.extensions);
   }
 
